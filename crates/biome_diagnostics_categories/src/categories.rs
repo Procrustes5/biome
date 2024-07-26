@@ -299,6 +299,7 @@ define_categories! {
     "ci",
     "configuration",
     "organizeImports",
+    "assists",
     "migrate",
     "deserialize",
     "project",
