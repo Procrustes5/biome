@@ -21,8 +21,8 @@ use crate::{
 };
 use biome_analyze::options::PreferredQuote;
 use biome_analyze::{
-    AnalysisFilter, AnalyzerConfiguration, AnalyzerOptions, ControlFlow, Never,
-    RuleCategoriesBuilder, RuleCategory, RuleError,
+    AnalysisFilter, AnalyzerConfiguration, AnalyzerOptions, ControlFlow, Never, QueryMatch,
+    RuleCategoriesBuilder, RuleCategory, RuleError, RuleFilter,
 };
 use biome_configuration::javascript::JsxRuntime;
 use biome_diagnostics::{category, Applicability, Diagnostic, DiagnosticExt, Severity};
@@ -539,7 +539,6 @@ pub(crate) fn code_actions(params: CodeActionsParams) -> PullActionsResult {
         path,
         manifest,
         language,
-        settings,
         only,
         skip,
     } = params;
@@ -629,10 +628,7 @@ pub(crate) fn fix_all(params: FixAllParams) -> Result<FixFileResult, WorkspaceEr
     enabled_rules.extend(syntax_visitor.enabled_rules);
 
     let filter = AnalysisFilter {
-        categories: RuleCategoriesBuilder::default()
-            .with_syntax()
-            .with_lint()
-            .build(),
+        categories: params.rule_categories,
         enabled_rules: Some(enabled_rules.as_slice()),
         disabled_rules: &disabled_rules,
         range: None,
